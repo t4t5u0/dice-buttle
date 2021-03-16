@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"math"
 	"os"
 	"strconv"
 	"strings"
@@ -23,27 +24,75 @@ func main() {
 		n = append(n, 0)
 	}
 
-	fmt.Print("passive player m1 m2 m3: ")
-	m, err := SplitIntStdin(" ")
-	if err != nil || len(m) < 2 {
-		println("不正な入力です")
+	// fmt.Print("passive player m1 m2 m3: ")
+	// m, err := SplitIntStdin(" ")
+	// if err != nil || len(m) < 2 {
+	// 	println("不正な入力です")
+	// }
+	// if len(m) == 2 {
+	// 	m = append(m, 0)
+	// }
+	// fmt.Println(n, m)
+	r := roll(n[0], n[1])
+	fmt.Printf("%dd%d = %v\n", n[0], n[1], r)
+	fmt.Println(roll_sum(n[0], n[1], n[2]))
+	m := multiset{
+		m: map[string]int{},
 	}
-	if len(m) == 2 {
-		m = append(m, 0)
-	}
-	fmt.Println(n, m)
+	m.set(roll_sum(n[0], n[1], n[2]))
+	fmt.Println(m)
 
 }
 
-func roll(n2 int) (result []int) {
+func roll(n1, n2 int) (result [][]int) {
+	var tmp [][]int
 	for i := 1; i <= n2; i++ {
-		result = append(result, i)
+		tmp = append(tmp, []int{i})
+	}
+	// 追加用
+	value := tmp
+	for i := 0; i < n1-1; i++ {
+		lenResult := len(value)
+		for j := 0; j < lenResult; j++ {
+			for k := 0; k < len(tmp); k++ {
+				value = append(value, append(value[j], tmp[k]...))
+			}
+		}
+		pow := int(math.Pow(float64(n2), float64(i+1)))
+		value = value[pow:]
+	}
+	return value
+}
+
+// n回直積を取って、足し算して、multiset に突っ込む。母数はn2 ** n1
+// 確率にしたさはある
+func roll_sum(n1, n2, n3 int) (result []int) {
+	m := roll(n1, n2)
+	for i := 0; i < len(m); i++ {
+		sum := 0
+		for j := 0; j < len(m[i]); j++ {
+			sum += m[i][j]
+		}
+		result = append(result, sum+n3)
 	}
 	return
 }
 
-// n回直積を取って、足し算して、multiset に突っ込む。母数はn2 ** n1
-//
+type multiset struct {
+	m map[string]int
+}
+
+func (d multiset) set(ls []int) {
+	for i := 0; i < len(ls); i++ {
+		_, ok := d.m[strconv.Itoa(ls[i])]
+		if ok {
+			d.m[strconv.Itoa(ls[i])] += 1
+		} else {
+			d.m[strconv.Itoa(ls[i])] = 1
+		}
+	}
+	return
+}
 
 // SplitWithoutEmpty 入力から空白をトリムするやつ
 func SplitWithoutEmpty(stringTargeted string, delim string) (stringReturned []string) {
