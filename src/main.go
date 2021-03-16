@@ -51,14 +51,14 @@ func roll(n1, n2 int) (result [][]int) {
 	}
 	// 追加用
 	value := tmp
-	for i := 0; i < n1-1; i++ {
+	for i := 1; i < n1; i++ {
 		lenResult := len(value)
 		for j := 0; j < lenResult; j++ {
 			for k := 0; k < len(tmp); k++ {
 				value = append(value, append(value[j], tmp[k]...))
 			}
 		}
-		pow := int(math.Pow(float64(n2), float64(i+1)))
+		pow := int(math.Pow(float64(n2), float64(i)))
 		value = value[pow:]
 	}
 	return value
@@ -91,7 +91,6 @@ func (d multiset) set(ls []int) {
 			d.m[strconv.Itoa(ls[i])] = 1
 		}
 	}
-	return
 }
 
 // SplitWithoutEmpty 入力から空白をトリムするやつ
