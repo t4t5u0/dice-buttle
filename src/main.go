@@ -33,62 +33,78 @@ func main() {
 	// 	m = append(m, 0)
 	// }
 	// fmt.Println(n, m)
-	r := roll(n[0], n[1])
-	fmt.Printf("%dd%d = %v\n", n[0], n[1], r)
-	fmt.Println(roll_sum(n[0], n[1], n[2]))
-	m := multiset{
-		m: map[string]int{},
-	}
-	m.set(roll_sum(n[0], n[1], n[2]))
-	fmt.Println(m)
+	// r := roll(n[0], n[1])
+	// fmt.Printf("%dd%d = %v\n", n[0], n[1], r)
+	// fmt.Println(roll_sum(n[0], n[1], n[2]))
+	// m := multiset{
+	// 	m: map[string]int{},
+	// }
+	// m.set(roll_sum(n[0], n[1], n[2]))
+	// fmt.Println(m)
+	a := Player{isActive: false,
+		n1: n[0],
+		n2: n[1],
+		n3: n[2],
+		sumValue: multiset{
+			map[string]int{},
+		}}
+	a.set()
+	fmt.Println(a.sumValue)
 
 }
 
-func roll(n1, n2 int) (result [][]int) {
+type Player struct {
+	isActive bool
+	n1       int
+	n2       int
+	n3       int
+	sumValue multiset
+}
+
+func (p Player) roll() (result [][]int) {
 	var tmp [][]int
-	for i := 1; i <= n2; i++ {
+	for i := 1; i <= p.n2; i++ {
 		tmp = append(tmp, []int{i})
 	}
 	// 追加用
 	value := tmp
-	for i := 1; i < n1; i++ {
+	for i := 1; i < p.n1; i++ {
 		lenResult := len(value)
 		for j := 0; j < lenResult; j++ {
 			for k := 0; k < len(tmp); k++ {
 				value = append(value, append(value[j], tmp[k]...))
 			}
 		}
-		pow := int(math.Pow(float64(n2), float64(i)))
+		pow := int(math.Pow(float64(p.n2), float64(i)))
 		value = value[pow:]
 	}
 	return value
 }
 
-// n回直積を取って、足し算して、multiset に突っ込む。母数はn2 ** n1
-// 確率にしたさはある
-func roll_sum(n1, n2, n3 int) (result []int) {
-	m := roll(n1, n2)
+func (p Player) roll_sum() (result []int) {
+	m := p.roll()
 	for i := 0; i < len(m); i++ {
 		sum := 0
 		for j := 0; j < len(m[i]); j++ {
 			sum += m[i][j]
 		}
-		result = append(result, sum+n3)
+		result = append(result, sum+p.n3)
 	}
 	return
 }
 
 type multiset struct {
-	m map[string]int
+	ms map[string]int
 }
 
-func (d multiset) set(ls []int) {
+func (p Player) set() {
+	ls := p.roll_sum()
 	for i := 0; i < len(ls); i++ {
-		_, ok := d.m[strconv.Itoa(ls[i])]
+		_, ok := p.sumValue.ms[strconv.Itoa(ls[i])]
 		if ok {
-			d.m[strconv.Itoa(ls[i])] += 1
+			p.sumValue.ms[strconv.Itoa(ls[i])] += 1
 		} else {
-			d.m[strconv.Itoa(ls[i])] = 1
+			p.sumValue.ms[strconv.Itoa(ls[i])] = 1
 		}
 	}
 }
