@@ -6,8 +6,6 @@ import (
 	"os"
 	"strconv"
 	"strings"
-
-	"github.com/soniakeys/multiset"
 )
 
 func main() {
@@ -44,11 +42,10 @@ func roll(n2 int) (result []int) {
 	return
 }
 
-func hoge(n1, n2 int) (result multiset.Multiset) {
-	r := roll(n2)
-	result := multiset.Multiset()
-}
+// n回直積を取って、足し算して、multiset に突っ込む。母数はn2 ** n1
+//
 
+// SplitWithoutEmpty 入力から空白をトリムするやつ
 func SplitWithoutEmpty(stringTargeted string, delim string) (stringReturned []string) {
 	stringSplited := strings.Split(stringTargeted, delim)
 
