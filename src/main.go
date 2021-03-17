@@ -46,7 +46,7 @@ func main() {
 		n2: n[1],
 		n3: n[2],
 		sumValue: multiset{
-			map[string]int{},
+			map[int]int{},
 		}}
 	a.set()
 	fmt.Println(a.sumValue)
@@ -94,19 +94,23 @@ func (p Player) roll_sum() (result []int) {
 }
 
 type multiset struct {
-	ms map[string]int
+	ms map[int]int
 }
 
 func (p Player) set() {
 	ls := p.roll_sum()
 	for i := 0; i < len(ls); i++ {
-		_, ok := p.sumValue.ms[strconv.Itoa(ls[i])]
+		_, ok := p.sumValue.ms[ls[i]]
 		if ok {
-			p.sumValue.ms[strconv.Itoa(ls[i])] += 1
+			p.sumValue.ms[ls[i]] += 1
 		} else {
-			p.sumValue.ms[strconv.Itoa(ls[i])] = 1
+			p.sumValue.ms[ls[i]] = 1
 		}
 	}
+}
+
+func (p Player) buttle() {
+
 }
 
 // SplitWithoutEmpty 入力から空白をトリムするやつ
