@@ -26,14 +26,14 @@ func main() {
 		n = append(n, 0)
 	}
 
-	// fmt.Print("passive player m1 m2 m3: ")
-	// m, err := SplitIntStdin(" ")
-	// if err != nil || len(m) < 2 {
-	// 	println("不正な入力です")
-	// }
-	// if len(m) == 2 {
-	// 	m = append(m, 0)
-	// }
+	fmt.Print("passive player m1 m2 m3: ")
+	m, err := SplitIntStdin(" ")
+	if err != nil || len(m) < 2 {
+		println("不正な入力です")
+	}
+	if len(m) == 2 {
+		m = append(m, 0)
+	}
 	// fmt.Println(n, m)
 	// r := roll(n[0], n[1])
 	// fmt.Printf("%dd%d = %v\n", n[0], n[1], r)
@@ -43,13 +43,26 @@ func main() {
 	// }
 	// m.set(roll_sum(n[0], n[1], n[2]))
 	// fmt.Println(m)
-	a := Player{isActive: false,
-		n1: n[0],
-		n2: n[1],
-		n3: n[2],
+	a := Player{
+		isActive: true,
+		n1:       n[0],
+		n2:       n[1],
+		n3:       n[2],
 	}.init()
-	fmt.Println(a.value)
-	fmt.Println(a.sumValue)
+
+	p := Player{
+		isActive: false,
+		n1:       m[0],
+		n2:       m[1],
+		n3:       m[2],
+	}.init()
+	// fmt.Println(a.value)
+	// fmt.Println(a.sumValue)
+	// fmt.Println(p.value)
+	// fmt.Println(p.sumValue)
+	fmt.Println("The probability that the an active player will win: ")
+	result := a.buttle(p)
+	fmt.Printf("%d/%d, %.2f%%\n", result.GetNumerator(), result.GetDenominator(), result.Float64()*100)
 
 }
 
@@ -116,7 +129,7 @@ type CumulativePublication struct {
 	pub map[int]rational.Rational
 }
 
-func (p Player) set() {
+func (p *Player) set() {
 	ls := p.roll_sum()
 	denominator := len(ls)
 
@@ -149,8 +162,20 @@ func (p Player) set() {
 	}
 }
 
-func (p Player) buttle() {
-
+func (active Player) buttle(pussive Player) (result rational.Rational) {
+	for i := active.minKey; i <= active.maxKey; i++ {
+		var pub rational.Rational
+		if i < pussive.minKey {
+			continue
+		}
+		if pussive.maxKey < i {
+			pub = rational.New(1, 1)
+		} else {
+			pub = pussive.sumValue.pub[i]
+		}
+		result = result.Add(pub.Multiply(active.value.pub[i]))
+	}
+	return
 }
 
 // SplitWithoutEmpty 入力から空白をトリムするやつ
