@@ -49,6 +49,7 @@ func main() {
 		n3: n[2],
 	}.init()
 	fmt.Println(a.value)
+	fmt.Println(a.sumValue)
 
 }
 
@@ -57,6 +58,8 @@ type Player struct {
 	n1       int
 	n2       int
 	n3       int
+	minKey   int
+	maxKey   int
 	value    Publication
 	sumValue CumulativePublication
 }
@@ -126,8 +129,23 @@ func (p Player) set() {
 		}
 	}
 
-	for i := 1; i < denominator; i++ {
-		// p.sumValue[ls[i]] = rational.New()
+	tmpMin := math.MaxInt32
+	tmpMax := 0
+	// fmt.Println(result)
+	for key := range p.value.pub {
+		if tmpMin > key {
+			tmpMin = key
+		}
+		if tmpMax < key {
+			tmpMax = key
+		}
+	}
+	p.minKey = tmpMin
+	p.maxKey = tmpMax
+
+	p.sumValue.pub[p.minKey] = p.value.pub[p.minKey]
+	for i := p.minKey + 1; i <= p.maxKey; i++ {
+		p.sumValue.pub[i] = p.sumValue.pub[i-1].Add(p.value.pub[i])
 	}
 }
 
