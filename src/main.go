@@ -7,6 +7,8 @@ import (
 	"os"
 	"strconv"
 	"strings"
+
+	"github.com/alex-ant/gomath/rational"
 )
 
 func main() {
@@ -45,11 +47,8 @@ func main() {
 		n1: n[0],
 		n2: n[1],
 		n3: n[2],
-		sumValue: multiset{
-			map[int]int{},
-		}}
-	a.set()
-	fmt.Println(a.sumValue)
+	}.init()
+	fmt.Println(a.value)
 
 }
 
@@ -58,7 +57,20 @@ type Player struct {
 	n1       int
 	n2       int
 	n3       int
-	sumValue multiset
+	value    Publication
+	sumValue CumulativePublication
+}
+
+func (p Player) init() Player {
+	p.value = Publication{
+		map[int]rational.Rational{},
+	}
+
+	p.sumValue = CumulativePublication{
+		map[int]rational.Rational{},
+	}
+	p.set()
+	return p
 }
 
 func (p Player) roll() (result [][]int) {
@@ -93,19 +105,29 @@ func (p Player) roll_sum() (result []int) {
 	return
 }
 
-type multiset struct {
-	ms map[int]int
+type Publication struct {
+	pub map[int]rational.Rational
+}
+
+type CumulativePublication struct {
+	pub map[int]rational.Rational
 }
 
 func (p Player) set() {
 	ls := p.roll_sum()
-	for i := 0; i < len(ls); i++ {
-		_, ok := p.sumValue.ms[ls[i]]
+	denominator := len(ls)
+
+	for i := 0; i < denominator; i++ {
+		_, ok := p.value.pub[ls[i]]
 		if ok {
-			p.sumValue.ms[ls[i]] += 1
+			p.value.pub[ls[i]] = p.value.pub[ls[i]].Add(rational.New(1, int64(denominator)))
 		} else {
-			p.sumValue.ms[ls[i]] = 1
+			p.value.pub[ls[i]] = rational.New(1, int64(denominator))
 		}
+	}
+
+	for i := 1; i < denominator; i++ {
+		// p.sumValue[ls[i]] = rational.New()
 	}
 }
 
