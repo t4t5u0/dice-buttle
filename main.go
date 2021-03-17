@@ -59,8 +59,8 @@ func main() {
 	// fmt.Println(a.sumValue)
 	// fmt.Println(p.value)
 	// fmt.Println(p.sumValue)
-	fmt.Println("The probability that the an active player will win: ")
-	result := a.Buttle(p)
+	fmt.Println("The probability that the an pussive player will win: ")
+	result := p.Buttle(a)
 	fmt.Printf("%d/%d, %.2f%%\n", result.GetNumerator(), result.GetDenominator(), result.Float64()*100)
 
 }
