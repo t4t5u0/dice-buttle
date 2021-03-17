@@ -34,26 +34,8 @@ func main() {
 	if len(m) == 2 {
 		m = append(m, 0)
 	}
-	// fmt.Println(n, m)
-	// r := roll(n[0], n[1])
-	// fmt.Printf("%dd%d = %v\n", n[0], n[1], r)
-	// fmt.Println(roll_sum(n[0], n[1], n[2]))
-	// m := multiset{
-	// 	m: map[string]int{},
-	// }
-	// m.set(roll_sum(n[0], n[1], n[2]))
-	// fmt.Println(m)
-	a := Player{
-		n1: n[0],
-		n2: n[1],
-		n3: n[2],
-	}.init()
-
-	p := Player{
-		n1: m[0],
-		n2: m[1],
-		n3: m[2],
-	}.init()
+	a := Player{}.init(n[0], n[1], n[2])
+	p := Player{}.init(m[0], m[1], m[2])
 	// fmt.Println(a.value)
 	// fmt.Println(a.sumValue)
 	// fmt.Println(p.value)
@@ -74,7 +56,10 @@ type Player struct {
 	sumValue CumulativePublication
 }
 
-func (p Player) init() Player {
+func (p Player) init(n1, n2, n3 int) Player {
+	p.n1 = n1
+	p.n2 = n2
+	p.n3 = n3
 	p.value = Publication{
 		map[int]rational.Rational{},
 	}
