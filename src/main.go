@@ -35,22 +35,22 @@ func main() {
 		m = append(m, 0)
 	}
 	a := Player{
-		n1:       n[0],
-		n2:       n[1],
-		n3:       n[2],
-		minKey:   0,
-		maxKey:   0,
-		value:    Publication{map[int]rational.Rational{}},
-		sumValue: CumulativePublication{map[int]rational.Rational{}},
+		n1:                    n[0],
+		n2:                    n[1],
+		n3:                    n[2],
+		minKey:                0,
+		maxKey:                0,
+		publication:           map[int]rational.Rational{},
+		cumulativePublication: map[int]rational.Rational{},
 	}
 	p := Player{
-		n1:       m[0],
-		n2:       m[1],
-		n3:       m[2],
-		minKey:   0,
-		maxKey:   0,
-		value:    Publication{map[int]rational.Rational{}},
-		sumValue: CumulativePublication{map[int]rational.Rational{}},
+		n1:                    m[0],
+		n2:                    m[1],
+		n3:                    m[2],
+		minKey:                0,
+		maxKey:                0,
+		publication:           map[int]rational.Rational{},
+		cumulativePublication: map[int]rational.Rational{},
 	}
 	a.init()
 	p.init()
@@ -66,29 +66,14 @@ func main() {
 }
 
 type Player struct {
-	n1       int
-	n2       int
-	n3       int
-	minKey   int
-	maxKey   int
-	value    Publication
-	sumValue CumulativePublication
+	n1                    int
+	n2                    int
+	n3                    int
+	minKey                int
+	maxKey                int
+	publication           map[int]rational.Rational
+	cumulativePublication map[int]rational.Rational
 }
-
-// func (p Player) init(n1, n2, n3 int) Player {
-// 	p.n1 = n1
-// 	p.n2 = n2
-// 	p.n3 = n3
-// 	p.value = Publication{
-// 		map[int]rational.Rational{},
-// 	}
-
-// 	p.sumValue = CumulativePublication{
-// 		map[int]rational.Rational{},
-// 	}
-// 	p.set()
-// 	return p
-// }
 
 func (p Player) roll() (result [][]int) {
 	var tmp [][]int
@@ -122,31 +107,22 @@ func (p Player) roll_sum() (result []int) {
 	return
 }
 
-type Publication struct {
-	pub map[int]rational.Rational
-}
-
-type CumulativePublication struct {
-	pub map[int]rational.Rational
-}
-
 func (p *Player) init() {
 	ls := p.roll_sum()
 	denominator := len(ls)
 
 	for i := 0; i < denominator; i++ {
-		_, ok := p.value.pub[ls[i]]
+		_, ok := p.publication[ls[i]]
 		if ok {
-			p.value.pub[ls[i]] = p.value.pub[ls[i]].Add(rational.New(1, int64(denominator)))
+			p.publication[ls[i]] = p.publication[ls[i]].Add(rational.New(1, int64(denominator)))
 		} else {
-			p.value.pub[ls[i]] = rational.New(1, int64(denominator))
+			p.publication[ls[i]] = rational.New(1, int64(denominator))
 		}
 	}
 
 	tmpMin := math.MaxInt32
 	tmpMax := 0
-	// fmt.Println(result)
-	for key := range p.value.pub {
+	for key := range p.publication {
 		if tmpMin > key {
 			tmpMin = key
 		}
@@ -157,9 +133,9 @@ func (p *Player) init() {
 	p.minKey = tmpMin
 	p.maxKey = tmpMax
 
-	p.sumValue.pub[p.minKey] = p.value.pub[p.minKey]
+	p.cumulativePublication[p.minKey] = p.publication[p.minKey]
 	for i := p.minKey + 1; i <= p.maxKey; i++ {
-		p.sumValue.pub[i] = p.sumValue.pub[i-1].Add(p.value.pub[i])
+		p.cumulativePublication[i] = p.cumulativePublication[i-1].Add(p.publication[i])
 	}
 }
 
@@ -172,9 +148,9 @@ func (active Player) buttle(pussive Player) (result rational.Rational) {
 		if pussive.maxKey < i {
 			pub = rational.New(1, 1)
 		} else {
-			pub = pussive.sumValue.pub[i]
+			pub = pussive.cumulativePublication[i]
 		}
-		result = result.Add(pub.Multiply(active.value.pub[i]))
+		result = result.Add(pub.Multiply(active.publication[i]))
 	}
 	return
 }
