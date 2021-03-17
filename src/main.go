@@ -44,17 +44,15 @@ func main() {
 	// m.set(roll_sum(n[0], n[1], n[2]))
 	// fmt.Println(m)
 	a := Player{
-		isActive: true,
-		n1:       n[0],
-		n2:       n[1],
-		n3:       n[2],
+		n1: n[0],
+		n2: n[1],
+		n3: n[2],
 	}.init()
 
 	p := Player{
-		isActive: false,
-		n1:       m[0],
-		n2:       m[1],
-		n3:       m[2],
+		n1: m[0],
+		n2: m[1],
+		n3: m[2],
 	}.init()
 	// fmt.Println(a.value)
 	// fmt.Println(a.sumValue)
@@ -67,7 +65,6 @@ func main() {
 }
 
 type Player struct {
-	isActive bool
 	n1       int
 	n2       int
 	n3       int
