@@ -42,7 +42,7 @@ func main() {
 		maxKey:                0,
 		publication:           map[int]rational.Rational{},
 		cumulativePublication: map[int]rational.Rational{},
-	}
+	}.init()
 	p := Player{
 		n1:                    m[0],
 		n2:                    m[1],
@@ -51,9 +51,9 @@ func main() {
 		maxKey:                0,
 		publication:           map[int]rational.Rational{},
 		cumulativePublication: map[int]rational.Rational{},
-	}
-	a.init()
-	p.init()
+	}.init()
+	// a.init()
+	// p.init()
 
 	// fmt.Println(a.value)
 	// fmt.Println(a.sumValue)
@@ -107,7 +107,7 @@ func (p Player) roll_sum() (result []int) {
 	return
 }
 
-func (p *Player) init() {
+func (p Player) init() Player {
 	ls := p.roll_sum()
 	denominator := len(ls)
 
@@ -137,6 +137,8 @@ func (p *Player) init() {
 	for i := p.minKey + 1; i <= p.maxKey; i++ {
 		p.cumulativePublication[i] = p.cumulativePublication[i-1].Add(p.publication[i])
 	}
+
+	return p
 }
 
 func (active Player) buttle(pussive Player) (result rational.Rational) {
