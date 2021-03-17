@@ -34,8 +34,27 @@ func main() {
 	if len(m) == 2 {
 		m = append(m, 0)
 	}
-	a := Player{}.init(n[0], n[1], n[2])
-	p := Player{}.init(m[0], m[1], m[2])
+	a := Player{
+		n1:       n[0],
+		n2:       n[1],
+		n3:       n[2],
+		minKey:   0,
+		maxKey:   0,
+		value:    Publication{map[int]rational.Rational{}},
+		sumValue: CumulativePublication{map[int]rational.Rational{}},
+	}
+	p := Player{
+		n1:       m[0],
+		n2:       m[1],
+		n3:       m[2],
+		minKey:   0,
+		maxKey:   0,
+		value:    Publication{map[int]rational.Rational{}},
+		sumValue: CumulativePublication{map[int]rational.Rational{}},
+	}
+	a.init()
+	p.init()
+
 	// fmt.Println(a.value)
 	// fmt.Println(a.sumValue)
 	// fmt.Println(p.value)
@@ -56,20 +75,20 @@ type Player struct {
 	sumValue CumulativePublication
 }
 
-func (p Player) init(n1, n2, n3 int) Player {
-	p.n1 = n1
-	p.n2 = n2
-	p.n3 = n3
-	p.value = Publication{
-		map[int]rational.Rational{},
-	}
+// func (p Player) init(n1, n2, n3 int) Player {
+// 	p.n1 = n1
+// 	p.n2 = n2
+// 	p.n3 = n3
+// 	p.value = Publication{
+// 		map[int]rational.Rational{},
+// 	}
 
-	p.sumValue = CumulativePublication{
-		map[int]rational.Rational{},
-	}
-	p.set()
-	return p
-}
+// 	p.sumValue = CumulativePublication{
+// 		map[int]rational.Rational{},
+// 	}
+// 	p.set()
+// 	return p
+// }
 
 func (p Player) roll() (result [][]int) {
 	var tmp [][]int
@@ -111,7 +130,7 @@ type CumulativePublication struct {
 	pub map[int]rational.Rational
 }
 
-func (p *Player) set() {
+func (p *Player) init() {
 	ls := p.roll_sum()
 	denominator := len(ls)
 
