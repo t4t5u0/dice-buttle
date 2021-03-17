@@ -65,6 +65,7 @@ func main() {
 
 }
 
+//  Player プレイヤー構造体。必ずinitメソッドを呼んでください
 type Player struct {
 	n1                    int
 	n2                    int
