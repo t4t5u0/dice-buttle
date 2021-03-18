@@ -40,10 +40,10 @@ func (p Player) roll() (result [][]int) {
 }
 
 // func product(n, m int) {
-func product() {
+func (p Player) product() (result [][]int) {
 	// n d m の試行を考える
-	n := 10
-	m := 6
+	n := p.N1
+	m := p.N2
 	for i := 0; i < int(math.Pow(float64(m), float64(n))); i++ {
 		a := []rune(fmt.Sprintf("%0"+fmt.Sprintf("%d", n)+"s", strconv.FormatInt(int64(i), m)))
 		b := make([]int, n)
@@ -52,11 +52,14 @@ func product() {
 			b[j]++
 		}
 		// fmt.Println(b)
+		result = append(result, b)
 	}
+	return result
 }
 
 func (p Player) roll_sum() (result []int) {
-	m := p.roll()
+	// m := p.roll()
+	m := p.product()
 	for i := 0; i < len(m); i++ {
 		sum := 0
 		for j := 0; j < len(m[i]); j++ {
