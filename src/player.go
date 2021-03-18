@@ -1,7 +1,9 @@
 package player
 
 import (
+	"fmt"
 	"math"
+	"strconv"
 
 	"github.com/alex-ant/gomath/rational"
 )
@@ -35,6 +37,22 @@ func (p Player) roll() (result [][]int) {
 		value = value[pow:]
 	}
 	return value
+}
+
+// func product(n, m int) {
+func product() {
+	// n d m の試行を考える
+	n := 10
+	m := 6
+	for i := 0; i < int(math.Pow(float64(m), float64(n))); i++ {
+		a := []rune(fmt.Sprintf("%0"+fmt.Sprintf("%d", n)+"s", strconv.FormatInt(int64(i), m)))
+		b := make([]int, n)
+		for j, item := range a {
+			b[j], _ = strconv.Atoi(string(item))
+			b[j]++
+		}
+		// fmt.Println(b)
+	}
 }
 
 func (p Player) roll_sum() (result []int) {
