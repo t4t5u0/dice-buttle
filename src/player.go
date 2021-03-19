@@ -3,7 +3,6 @@ package player
 import (
 	"fmt"
 	"math"
-	"strconv"
 
 	"github.com/alex-ant/gomath/rational"
 )
@@ -45,16 +44,16 @@ func (p Player) product() (result [][]int) {
 	n := p.N1
 	m := p.N2
 	result = make([][]int, int(math.Pow(float64(m), float64(n))))
+
+	// m^0, m^1, ... m^n となる配列を作成する
+	expoList := make([]int, n)
+	expoList[0] = 1
+	for i := 1; i < n; i++ {
+		expoList[i] = expoList[i-1] * m
+	}
+
 	for i := 0; i < int(math.Pow(float64(m), float64(n))); i++ {
-		a := []rune(fmt.Sprintf("%0"+fmt.Sprintf("%d", n)+"s", strconv.FormatInt(int64(i), m)))
-		b := make([]int, n)
-		for j, item := range a {
-			b[j], _ = strconv.Atoi(string(item))
-			b[j]++
-		}
-		// fmt.Println(b)
-		result[i] = b
-		// result = append(result, b)
+		result[i] = baseTrance(i, n, m, expoList)
 	}
 	return result
 }
@@ -121,4 +120,15 @@ func (active Player) Buttle(pussive Player) (result rational.Rational) {
 		result = result.Add(pub.Multiply(active.Publication[i]))
 	}
 	return
+}
+
+func baseTrance(x, len, base int, expoList []int) []int {
+	result := make([]int, len)
+	for i := len - 1; i >= 0; i-- {
+		result[i] = x / expoList[i]
+		x -= result[i] * expoList[i]
+		result[i]++
+	}
+	fmt.Println(result)
+	return result
 }
