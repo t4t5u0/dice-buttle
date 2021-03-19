@@ -44,6 +44,7 @@ func (p Player) product() (result [][]int) {
 	// n d m の試行を考える
 	n := p.N1
 	m := p.N2
+	result = make([][]int, int(math.Pow(float64(m), float64(n))))
 	for i := 0; i < int(math.Pow(float64(m), float64(n))); i++ {
 		a := []rune(fmt.Sprintf("%0"+fmt.Sprintf("%d", n)+"s", strconv.FormatInt(int64(i), m)))
 		b := make([]int, n)
@@ -52,7 +53,8 @@ func (p Player) product() (result [][]int) {
 			b[j]++
 		}
 		// fmt.Println(b)
-		result = append(result, b)
+		result[i] = b
+		// result = append(result, b)
 	}
 	return result
 }
@@ -60,12 +62,13 @@ func (p Player) product() (result [][]int) {
 func (p Player) roll_sum() (result []int) {
 	// m := p.roll()
 	m := p.product()
+	result = make([]int, len(m))
 	for i := 0; i < len(m); i++ {
 		sum := 0
 		for j := 0; j < len(m[i]); j++ {
 			sum += m[i][j]
 		}
-		result = append(result, sum+p.N3)
+		result[i] = sum + p.N3
 	}
 	return
 }
