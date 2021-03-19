@@ -1,6 +1,7 @@
 package player
 
 import (
+	"fmt"
 	"math"
 
 	"github.com/alex-ant/gomath/rational"
@@ -37,14 +38,36 @@ func (p Player) roll() (result [][]int) {
 	return value
 }
 
+// func product(n, m int) {
+func (p Player) product() (result [][]int) {
+	// n d m の試行を考える
+	n := p.N1
+	m := p.N2
+	result = make([][]int, int(math.Pow(float64(m), float64(n))))
+
+	// m^0, m^1, ... m^n となる配列を作成する
+	expoList := make([]int, n)
+	expoList[0] = 1
+	for i := 1; i < n; i++ {
+		expoList[i] = expoList[i-1] * m
+	}
+
+	for i := 0; i < int(math.Pow(float64(m), float64(n))); i++ {
+		result[i] = baseTrance(i, n, m, expoList)
+	}
+	return result
+}
+
 func (p Player) roll_sum() (result []int) {
-	m := p.roll()
+	// m := p.roll()
+	m := p.product()
+	result = make([]int, len(m))
 	for i := 0; i < len(m); i++ {
 		sum := 0
 		for j := 0; j < len(m[i]); j++ {
 			sum += m[i][j]
 		}
-		result = append(result, sum+p.N3)
+		result[i] = sum + p.N3
 	}
 	return
 }
@@ -97,4 +120,15 @@ func (active Player) Buttle(pussive Player) (result rational.Rational) {
 		result = result.Add(pub.Multiply(active.Publication[i]))
 	}
 	return
+}
+
+func baseTrance(x, len, base int, expoList []int) []int {
+	result := make([]int, len)
+	for i := len - 1; i >= 0; i-- {
+		result[i] = x / expoList[i]
+		x -= result[i] * expoList[i]
+		result[i]++
+	}
+	fmt.Println(result)
+	return result
 }
