@@ -1,7 +1,6 @@
 package player
 
 import (
-	"fmt"
 	"math"
 
 	"github.com/alex-ant/gomath/rational"
@@ -9,6 +8,7 @@ import (
 
 //  Player プレイヤー構造体。必ずinitメソッドを呼んでください
 type Player struct {
+	isRoll                bool
 	N1                    int
 	N2                    int
 	N3                    int
@@ -18,25 +18,25 @@ type Player struct {
 	CumulativePublication map[int]rational.Rational
 }
 
-func (p Player) roll() (result [][]int) {
-	var tmp [][]int
-	for i := 1; i <= p.N2; i++ {
-		tmp = append(tmp, []int{i})
-	}
-	// 追加用
-	value := tmp
-	for i := 1; i < p.N1; i++ {
-		lenResult := len(value)
-		for j := 0; j < lenResult; j++ {
-			for k := 0; k < len(tmp); k++ {
-				value = append(value, append(value[j], tmp[k]...))
-			}
-		}
-		pow := int(math.Pow(float64(p.N2), float64(i)))
-		value = value[pow:]
-	}
-	return value
-}
+// func (p Player) roll() (result [][]int) {
+// 	var tmp [][]int
+// 	for i := 1; i <= p.N2; i++ {
+// 		tmp = append(tmp, []int{i})
+// 	}
+// 	// 追加用
+// 	value := tmp
+// 	for i := 1; i < p.N1; i++ {
+// 		lenResult := len(value)
+// 		for j := 0; j < lenResult; j++ {
+// 			for k := 0; k < len(tmp); k++ {
+// 				value = append(value, append(value[j], tmp[k]...))
+// 			}
+// 		}
+// 		pow := int(math.Pow(float64(p.N2), float64(i)))
+// 		value = value[pow:]
+// 	}
+// 	return value
+// }
 
 // func product(n, m int) {
 func (p Player) product() (result [][]int) {
@@ -73,6 +73,16 @@ func (p Player) roll_sum() (result []int) {
 }
 
 func (p Player) Init() Player {
+
+	if p.N1 == 0 {
+		p.isRoll = false
+		p.MinKey = p.N3
+		p.MaxKey = p.N3
+		return p
+	}
+
+	p.isRoll = true
+
 	ls := p.roll_sum()
 	denominator := len(ls)
 
@@ -106,7 +116,39 @@ func (p Player) Init() Player {
 	return p
 }
 
+type pat struct {
+	a bool
+	p bool
+}
+
 func (active Player) Buttle(pussive Player) (result rational.Rational) {
+	// 判定の種類として
+	// Roll  vs Roll
+	// Roll  vs Const
+	// Const vs Roll
+	// Const vs Const
+	// の4種類がある．現在実装されているのは，R vs R のみ．
+	// Buttle を これらを呼び出すメソッドとして実装する
+
+	p := pat{
+		pussive.isRoll,
+		active.isRoll,
+	}
+	switch p {
+	case pat{true, true}:
+		result = pussive.rvsr(active)
+	case pat{true, false}:
+		result = pussive.rvsc(active)
+	case pat{false, true}:
+		result = active.rvsc(pussive)
+	case pat{false, false}:
+		result = pussive.cvsc(active)
+	}
+
+	return
+}
+
+func (active Player) rvsr(pussive Player) (result rational.Rational) {
 	for i := active.MinKey; i <= active.MaxKey; i++ {
 		var pub rational.Rational
 		if i < pussive.MinKey {
@@ -122,6 +164,21 @@ func (active Player) Buttle(pussive Player) (result rational.Rational) {
 	return
 }
 
+// rvsc -> Roll vs Const
+func (active Player) rvsc(pussive Player) (result rational.Rational) {
+	// fmt.Printf("%+v\n", pussive)
+	// fmt.Printf("%+v\n", active)
+	return rational.New(1, 1).Subtract(active.CumulativePublication[pussive.N3-1])
+}
+
+// cvsc -> Const vs Const
+func (active Player) cvsc(pussive Player) rational.Rational {
+	if pussive.N3 <= active.N3 {
+		return rational.New(0, 1)
+	}
+	return rational.New(1, 1)
+}
+
 func baseTrance(x, len, base int, expoList []int) []int {
 	result := make([]int, len)
 	for i := len - 1; i >= 0; i-- {
@@ -129,6 +186,6 @@ func baseTrance(x, len, base int, expoList []int) []int {
 		x -= result[i] * expoList[i]
 		result[i]++
 	}
-	fmt.Println(result)
+	// fmt.Println(result)
 	return result
 }
