@@ -18,26 +18,6 @@ type Player struct {
 	CumulativePublication map[int]rational.Rational
 }
 
-// func (p Player) roll() (result [][]int) {
-// 	var tmp [][]int
-// 	for i := 1; i <= p.N2; i++ {
-// 		tmp = append(tmp, []int{i})
-// 	}
-// 	// 追加用
-// 	value := tmp
-// 	for i := 1; i < p.N1; i++ {
-// 		lenResult := len(value)
-// 		for j := 0; j < lenResult; j++ {
-// 			for k := 0; k < len(tmp); k++ {
-// 				value = append(value, append(value[j], tmp[k]...))
-// 			}
-// 		}
-// 		pow := int(math.Pow(float64(p.N2), float64(i)))
-// 		value = value[pow:]
-// 	}
-// 	return value
-// }
-
 // func product(n, m int) {
 func (p Player) product() (result [][]int) {
 	// n d m の試行を考える
@@ -59,7 +39,6 @@ func (p Player) product() (result [][]int) {
 }
 
 func (p Player) roll_sum() (result []int) {
-	// m := p.roll()
 	m := p.product()
 	result = make([]int, len(m))
 	for i := 0; i < len(m); i++ {
@@ -166,8 +145,6 @@ func (active Player) rvsr(pussive Player) (result rational.Rational) {
 
 // rvsc -> Roll vs Const
 func (active Player) rvsc(pussive Player) (result rational.Rational) {
-	// fmt.Printf("%+v\n", pussive)
-	// fmt.Printf("%+v\n", active)
 	return rational.New(1, 1).Subtract(active.CumulativePublication[pussive.N3-1])
 }
 
@@ -186,6 +163,5 @@ func baseTrance(x, len, base int, expoList []int) []int {
 		x -= result[i] * expoList[i]
 		result[i]++
 	}
-	// fmt.Println(result)
 	return result
 }

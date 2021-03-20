@@ -12,12 +12,9 @@ import (
 )
 
 func main() {
-	// m1 := multiset.Multiset{"a": 1, "b": 2}
-	// fmt.Println(multiset.Sum(m1))
-	// n1 d n2 + n3
-	// m1 d m2 + m3
-	fmt.Println("n1 d n2 + n3: n3 is optional")
-	fmt.Print("active  player n1 n2 n3: ")
+	fmt.Println("A d X + N: N is optional")
+	fmt.Println("if A is 0, N is const")
+	fmt.Print("active  player A X N: ")
 	n, err := SplitIntStdin(" ")
 	if err != nil || len(n) < 2 {
 		println("不正な入力です")
@@ -26,7 +23,7 @@ func main() {
 		n = append(n, 0)
 	}
 
-	fmt.Print("passive player m1 m2 m3: ")
+	fmt.Print("passive player A X N: ")
 	m, err := SplitIntStdin(" ")
 	if err != nil || len(m) < 2 {
 		println("不正な入力です")
@@ -52,13 +49,6 @@ func main() {
 		Publication:           map[int]rational.Rational{},
 		CumulativePublication: map[int]rational.Rational{},
 	}.Init()
-	// a.init()
-	// p.init()
-
-	// fmt.Println(a.value)
-	// fmt.Println(a.sumValue)
-	// fmt.Println(p.value)
-	// fmt.Println(p.sumValue)
 	fmt.Println("The probability that the an pussive player will win: ")
 	result := p.Buttle(a)
 	fmt.Printf("%d/%d, %.2f%%\n", result.GetNumerator(), result.GetDenominator(), result.Float64()*100)
