@@ -166,7 +166,9 @@ func (active Player) rvsr(pussive Player) (result rational.Rational) {
 
 // rvsc -> Roll vs Const
 func (active Player) rvsc(pussive Player) (result rational.Rational) {
-	return rational.New(1, 1).Subtract(active.CumulativePublication[active.N3-1])
+	// fmt.Printf("%+v\n", pussive)
+	// fmt.Printf("%+v\n", active)
+	return rational.New(1, 1).Subtract(active.CumulativePublication[pussive.N3-1])
 }
 
 // cvsc -> Const vs Const
