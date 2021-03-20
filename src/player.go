@@ -73,13 +73,19 @@ func (p Player) roll_sum() (result []int) {
 }
 
 func (p Player) Init() Player {
+
+	if p.N1 == 0 {
+		p.isRoll = false
+		p.MinKey = p.N3
+		p.MaxKey = p.N3
+		return p
+	}
+
+	p.isRoll = true
+
 	ls := p.roll_sum()
 	denominator := len(ls)
 
-	p.isRoll = true
-	if p.N1 == 0 {
-		p.isRoll = false
-	}
 	for i := 0; i < denominator; i++ {
 		_, ok := p.Publication[ls[i]]
 		if ok {
@@ -132,8 +138,11 @@ func (active Player) Buttle(pussive Player) (result rational.Rational) {
 	case pat{true, true}:
 		result = pussive.rvsr(active)
 	case pat{true, false}:
+		result = pussive.rvsc(active)
 	case pat{false, true}:
+		result = active.rvsc(pussive)
 	case pat{false, false}:
+		result = pussive.cvsc(active)
 	}
 
 	return
@@ -153,6 +162,19 @@ func (active Player) rvsr(pussive Player) (result rational.Rational) {
 		result = result.Add(pub.Multiply(active.Publication[i]))
 	}
 	return
+}
+
+// rvsc -> Roll vs Const
+func (active Player) rvsc(pussive Player) (result rational.Rational) {
+	return rational.New(1, 1).Subtract(active.CumulativePublication[active.N3-1])
+}
+
+// cvsc -> Const vs Const
+func (active Player) cvsc(pussive Player) rational.Rational {
+	if pussive.N3 <= active.N3 {
+		return rational.New(0, 1)
+	}
+	return rational.New(1, 1)
 }
 
 func baseTrance(x, len, base int, expoList []int) []int {
