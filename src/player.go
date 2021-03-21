@@ -1,7 +1,6 @@
 package player
 
 import (
-	"fmt"
 	"math"
 
 	"github.com/alex-ant/gomath/rational"
@@ -131,8 +130,8 @@ func (active Player) Buttle(pussive Player) (result rational.Rational) {
 func (pussive Player) rvsr(active Player) (result rational.Rational) {
 	// fmt.Println(pussive.CumulativePublication)
 	// fmt.Println(active.Publication)
-	fmt.Printf("%#v\n", pussive)
-	fmt.Printf("%#v\n", active)
+	// fmt.Printf("%#v\n", pussive)
+	// fmt.Printf("%#v\n", active)
 	result = rational.New(0, 1)
 	for i := pussive.MinKey; i <= pussive.MaxKey; i++ {
 		var pub rational.Rational
