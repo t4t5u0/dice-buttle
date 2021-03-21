@@ -1,6 +1,7 @@
 package player
 
 import (
+	"fmt"
 	"math"
 
 	"github.com/alex-ant/gomath/rational"
@@ -127,20 +128,25 @@ func (active Player) Buttle(pussive Player) (result rational.Rational) {
 	return
 }
 
-func (active Player) rvsr(pussive Player) (result rational.Rational) {
-	for i := active.MinKey; i <= active.MaxKey; i++ {
+func (pussive Player) rvsr(active Player) (result rational.Rational) {
+	// fmt.Println(pussive.CumulativePublication)
+	// fmt.Println(active.Publication)
+	fmt.Printf("%#v\n", pussive)
+	fmt.Printf("%#v\n", active)
+	result = rational.New(0, 1)
+	for i := pussive.MinKey; i <= pussive.MaxKey; i++ {
 		var pub rational.Rational
-		if i < pussive.MinKey {
+		if i < active.MinKey {
 			continue
 		}
-		if pussive.MaxKey < i {
+		if active.MaxKey < i {
 			pub = rational.New(1, 1)
 		} else {
-			pub = pussive.CumulativePublication[i]
+			pub = active.CumulativePublication[i]
 		}
-		result = result.Add(pub.Multiply(active.Publication[i]))
+		result = result.Add(pub.Multiply(pussive.Publication[i]))
 	}
-	return
+	return result
 }
 
 // rvsc -> Roll vs Const

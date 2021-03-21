@@ -39,12 +39,12 @@ func TestButtle(t *testing.T) {
 	// 10d6 // 激遅になる．6^10 = 60_466_176 回の計算が必要になるから仕方ない
 
 	activeAList := []int{2}
-	activeXList := []int{}
-	activeNList := []int{}
+	activeXList := []int{6}
+	activeNList := []int{0}
 
 	pussiveAList := []int{2}
-	pussiveXList := []int{}
-	pussiveNList := []int{}
+	pussiveXList := []int{6}
+	pussiveNList := []int{0}
 
 	activeList := make([]Player, len(activeAList))
 	pussiveList := make([]Player, len(activeAList))
