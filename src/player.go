@@ -100,7 +100,7 @@ type pat struct {
 	p bool
 }
 
-func (active Player) Buttle(pussive Player) (result rational.Rational) {
+func (active Player) Buttle(passive Player) (result rational.Rational) {
 	// 判定の種類として
 	// Roll  vs Roll
 	// Roll  vs Const
@@ -110,30 +110,30 @@ func (active Player) Buttle(pussive Player) (result rational.Rational) {
 	// Buttle を これらを呼び出すメソッドとして実装する
 
 	p := pat{
-		pussive.isRoll,
+		passive.isRoll,
 		active.isRoll,
 	}
 	switch p {
 	case pat{true, true}:
-		result = pussive.rvsr(active)
+		result = passive.rvsr(active)
 	case pat{true, false}:
-		result = pussive.rvsc(active)
+		result = passive.rvsc(active)
 	case pat{false, true}:
-		result = active.rvsc(pussive)
+		result = active.rvsc(passive)
 	case pat{false, false}:
-		result = pussive.cvsc(active)
+		result = passive.cvsc(active)
 	}
 
 	return
 }
 
-func (pussive Player) rvsr(active Player) (result rational.Rational) {
-	// fmt.Println(pussive.CumulativePublication)
+func (passive Player) rvsr(active Player) (result rational.Rational) {
+	// fmt.Println(passive.CumulativePublication)
 	// fmt.Println(active.Publication)
-	// fmt.Printf("%#v\n", pussive)
+	// fmt.Printf("%#v\n", passive)
 	// fmt.Printf("%#v\n", active)
 	result = rational.New(0, 1)
-	for i := pussive.MinKey; i <= pussive.MaxKey; i++ {
+	for i := passive.MinKey; i <= passive.MaxKey; i++ {
 		var pub rational.Rational
 		if i < active.MinKey {
 			continue
@@ -143,19 +143,19 @@ func (pussive Player) rvsr(active Player) (result rational.Rational) {
 		} else {
 			pub = active.CumulativePublication[i]
 		}
-		result = result.Add(pub.Multiply(pussive.Publication[i]))
+		result = result.Add(pub.Multiply(passive.Publication[i]))
 	}
 	return result
 }
 
 // rvsc -> Roll vs Const
-func (active Player) rvsc(pussive Player) (result rational.Rational) {
-	return rational.New(1, 1).Subtract(active.CumulativePublication[pussive.N3-1])
+func (active Player) rvsc(passive Player) (result rational.Rational) {
+	return rational.New(1, 1).Subtract(active.CumulativePublication[passive.N3-1])
 }
 
 // cvsc -> Const vs Const
-func (active Player) cvsc(pussive Player) rational.Rational {
-	if pussive.N3 <= active.N3 {
+func (active Player) cvsc(passive Player) rational.Rational {
+	if passive.N3 <= active.N3 {
 		return rational.New(0, 1)
 	}
 	return rational.New(1, 1)
