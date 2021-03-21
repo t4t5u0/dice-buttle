@@ -100,7 +100,7 @@ type pat struct {
 	p bool
 }
 
-func (active Player) Buttle(passive Player) (result rational.Rational) {
+func (passive Player) Buttle(active Player) (result rational.Rational) {
 	// 判定の種類として
 	// Roll  vs Roll
 	// Roll  vs Const
