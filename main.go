@@ -49,7 +49,7 @@ func main() {
 		Publication:           map[int]rational.Rational{},
 		CumulativePublication: map[int]rational.Rational{},
 	}.Init()
-	fmt.Println("The probability that the an pussive player will win: ")
+	fmt.Println("The probability that the an passive player will win: ")
 	result := p.Buttle(a)
 	fmt.Printf("%d/%d, %.2f%%\n", result.GetNumerator(), result.GetDenominator(), result.Float64()*100)
 
